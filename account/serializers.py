@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from account.models import User
-from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 UserModel = User
@@ -18,13 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
             deposit=validated_data["deposit"],
             password=validated_data["password"],
         )
-        return Response(
-                {
-                    "responsecode": 201,
-                    "success": True,
-                    "message": "{0} your account have been created".format(user.account_name),
-                },
-            )
+        return user
 
     class Meta:
         model = User

@@ -39,27 +39,16 @@ def create_account(request):
             serializer_class = UserSerializer(data=data)
             serializer_class.is_valid(raise_exception=True)
             data = serializer_class.save()
-            return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+            return Response( {"responsecode": 201,"success": True,"message": "your account have been created"}, status=status.HTTP_201_CREATED)
 
-api_view(["post"])
-def login(request):
+@api_view(["post"])
+def authr_token(request):
     if request.method == "POST":
         account_name = request.data.get("account_name")
         password = request.data.get("password")
         try:
             log = authenticate(account_name=account_name, password=password)
-            refresh = RefreshToken.for_user(log.id)
-
-            return Response(
-                    {"responsecode":200,"success": False, "accesstoken": str(refresh.access_token),},
-                    status=status.HTTP_200_OK,
-                )
+            refresh = RefreshToken.for_user(log)
+            return Response({"responsecode":200,"success": True, "accesstoken": str(refresh.access_token),},status=status.HTTP_200_OK)
         except AttributeError:
-            return Response(
-                {
-                    "responsecode":401,
-                    "status": False,
-                    "message": "Please enter the correct username and password",
-                },
-                status=status.HTTP_401_UNAUTHORIZED,
-            )
+            return Response({"responsecode":401,"success": False,"message": "Please enter the correct username and password",},status=status.HTTP_401_UNAUTHORIZED)
