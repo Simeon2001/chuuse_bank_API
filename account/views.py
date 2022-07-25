@@ -11,7 +11,7 @@ from rest_framework.decorators import (
 from .account_gen import generate
 from django.contrib.auth import authenticate
 from account.models import User
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 
 UserModel = User
 minimum_deposit = 500 * 100
@@ -48,10 +48,10 @@ def login(request):
         password = request.data.get("password")
         try:
             log = authenticate(account_name=account_name, password=password)
-            login = str(Token.objects.get(user_id=log.id))
+            refresh = RefreshToken.for_user(log.id)
 
             return Response(
-                    {"responsecode":200,"success": False, "accesstoken": login,},
+                    {"responsecode":200,"success": False, "accesstoken": str(refresh.access_token),},
                     status=status.HTTP_200_OK,
                 )
         except AttributeError:
