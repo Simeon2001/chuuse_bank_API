@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
+from account.models import User
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 UserModel = User
 
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, write_only=True)
+
 
     def create(self, validated_data):
 
@@ -17,7 +18,6 @@ class UserSerializer(serializers.ModelSerializer):
             deposit=validated_data["deposit"],
             password=validated_data["password"],
         )
-        new_token = Token.objects.create(user=user)
         return Response(
                 {
                     "responsecode": 201,

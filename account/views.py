@@ -9,11 +9,11 @@ from rest_framework.decorators import (
     authentication_classes,
 )
 from .account_gen import generate
-from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
+from account.models import User
 from rest_framework.authtoken.models import Token
 
-UserModel = get_user_model()
+UserModel = User
 minimum_deposit = 500 * 100
 
 @api_view(["post"])
@@ -22,7 +22,7 @@ def create_account(request):
     if request.method == "POST":
         account_number = generate()
         account_name = request.data.get("account_name")
-        deposit = request.data.get("deposit")
+        deposit = int(request.data.get("deposit"))
         amount = deposit * 100
         password = request.data.get("password")
         if UserModel.objects.filter(account_name__icontains=account_name).first() or minimum_deposit > amount:
