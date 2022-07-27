@@ -12,11 +12,22 @@ from .account_gen import generate
 from django.contrib.auth import authenticate
 from account.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+
+
 
 UserModel = User
 minimum_deposit = 500 * 100
 
-
+@swagger_auto_schema(method="post", request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'account_name': openapi.Schema(type=openapi.TYPE_STRING, description="account_number"),
+        'deposit': openapi.Schema(type=openapi.TYPE_NUMBER, description="deposit"),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description="password"),
+    }),
+)
 @api_view(["post"])
 @permission_classes([AllowAny])
 def create_account(request):
@@ -57,7 +68,13 @@ def create_account(request):
                 status=status.HTTP_201_CREATED,
             )
 
-
+@swagger_auto_schema(method="post", request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'account_name': openapi.Schema(type=openapi.TYPE_STRING, description="account_number"),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description="password"),
+    }),
+)
 @api_view(["post"])
 def authr_token(request):
     if request.method == "POST":

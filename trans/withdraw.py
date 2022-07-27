@@ -9,8 +9,17 @@ from rest_framework.decorators import (
     permission_classes,
 )
 from django.contrib.auth import authenticate
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
-
+@swagger_auto_schema(method="post", request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'account_number': openapi.Schema(type=openapi.TYPE_STRING, description="account_number"),
+        'password': openapi.Schema(type=openapi.TYPE_STRING, description="password"),
+        'withdraw_amount': openapi.Schema(type=openapi.TYPE_NUMBER, description="withdraw_amount")
+    }),
+)
 @api_view(["post"])
 @permission_classes([IsAuthenticated])
 def withdraw_funds(request):

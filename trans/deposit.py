@@ -9,7 +9,16 @@ from rest_framework.decorators import (
     api_view,
     permission_classes,
 )
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 
+@swagger_auto_schema(method="post", request_body=openapi.Schema(
+    type=openapi.TYPE_OBJECT,
+    properties={
+        'account_number': openapi.Schema(type=openapi.TYPE_STRING, description="account_number"),
+        'amount': openapi.Schema(type=openapi.TYPE_NUMBER, description="account_number")
+    }),
+)
 @api_view(["post"])
 @permission_classes([IsAuthenticated])
 def deposit_funds(request):
