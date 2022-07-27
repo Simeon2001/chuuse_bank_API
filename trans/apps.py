@@ -2,5 +2,5 @@ from django.apps import AppConfig
 
 
 class TransConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'trans'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "trans"

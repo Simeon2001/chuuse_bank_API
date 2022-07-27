@@ -8,7 +8,6 @@ UserModel = User
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, write_only=True)
 
-
     def create(self, validated_data):
 
         user = UserModel.objects.create_user(

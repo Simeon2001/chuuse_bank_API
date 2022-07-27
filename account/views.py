@@ -16,6 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 UserModel = User
 minimum_deposit = 500 * 100
 
+
 @api_view(["post"])
 @permission_classes([AllowAny])
 def create_account(request):
@@ -25,7 +26,10 @@ def create_account(request):
         deposit = int(request.data.get("deposit"))
         amount = deposit * 100
         password = request.data.get("password")
-        if UserModel.objects.filter(account_name__icontains=account_name).first() or minimum_deposit > amount:
+        if (
+            UserModel.objects.filter(account_name__icontains=account_name).first()
+            or minimum_deposit > amount
+        ):
             return Response(
                 {
                     "responsecode": 401,
@@ -35,11 +39,24 @@ def create_account(request):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
         else:
-            data = {'account_name': account_name, 'account_number': account_number, 'deposit': deposit,'password': password}
+            data = {
+                "account_name": account_name,
+                "account_number": account_number,
+                "deposit": deposit,
+                "password": password,
+            }
             serializer_class = UserSerializer(data=data)
             serializer_class.is_valid(raise_exception=True)
             data = serializer_class.save()
-            return Response( {"responsecode": 201,"success": True,"message": "your account have been created"}, status=status.HTTP_201_CREATED)
+            return Response(
+                {
+                    "responsecode": 201,
+                    "success": True,
+                    "message": "your account have been created",
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
 
 @api_view(["post"])
 def authr_token(request):
@@ -49,6 +66,20 @@ def authr_token(request):
         try:
             log = authenticate(account_name=account_name, password=password)
             refresh = RefreshToken.for_user(log)
-            return Response({"responsecode":200,"success": True, "accesstoken": str(refresh.access_token),},status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "responsecode": 200,
+                    "success": True,
+                    "accesstoken": str(refresh.access_token),
+                },
+                status=status.HTTP_200_OK,
+            )
         except AttributeError:
-            return Response({"responsecode":401,"success": False,"message": "Please enter the correct username and password",},status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {
+                    "responsecode": 401,
+                    "success": False,
+                    "message": "Please enter the correct username and password",
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
